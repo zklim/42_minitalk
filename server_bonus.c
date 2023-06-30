@@ -1,22 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   server_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 16:03:21 by zhlim             #+#    #+#             */
-/*   Updated: 2023/06/30 17:28:42 by zhlim            ###   ########.fr       */
+/*   Updated: 2023/06/30 17:29:15 by zhlim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minitalk.h"
 
-void	signal_handler(int sig)
+void	signal_handler(int sig, struct __siginfo *info, void *context)
 {
 	static int	bit;
 	static char	c;
 
+	(void)context;
 	if (sig == SIGUSR1)
 		c |= 1 << bit;
 	bit++;
@@ -25,13 +26,17 @@ void	signal_handler(int sig)
 		write(1, &c, 1);
 		bit = 0;
 		c = '\0';
+		kill(info->si_pid, SIGUSR1);
 	}
 }
 
 int	main(int ac, char **av)
 {
-	int	pid;
+	int					pid;
+	struct sigaction	sa;
 
+	sa.sa_sigaction = signal_handler;
+	sa.sa_flags = SA_SIGINFO;
 	(void)av;
 	if (ac == 1)
 	{
@@ -40,8 +45,8 @@ int	main(int ac, char **av)
 		ft_printf("Pending message to print...\n");
 		while (1)
 		{
-			signal(SIGUSR1, signal_handler);
-			signal(SIGUSR2, signal_handler);
+			sigaction(SIGUSR1, &sa, NULL);
+			sigaction(SIGUSR2, &sa, NULL);
 			pause();
 		}
 	}

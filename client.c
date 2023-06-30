@@ -6,7 +6,7 @@
 /*   By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 16:17:54 by zhlim             #+#    #+#             */
-/*   Updated: 2023/06/29 16:56:22 by zhlim            ###   ########.fr       */
+/*   Updated: 2023/06/30 17:28:26 by zhlim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,15 @@ void	send_signal(int pid, char c)
 {
 	int	bit;
 
+	bit = 0;
 	while (bit < 8)
 	{
-		if (c & 1 << bit != 0)
-		{
+		if ((c & (1 << bit)) != 0)
 			kill(pid, SIGUSR1);
-		}
+		else
+			kill(pid, SIGUSR2);
 		bit++;
+		usleep(100);
 	}
 }
 
@@ -34,13 +36,13 @@ int	main(int ac, char **av)
 	if (ac == 3)
 	{
 		i = 0;
-		pid = *av[1];
-		ft_printf("PID is: %d\n", pid);
+		pid = ft_atoi(av[1]);
 		while (av[2][i])
 		{
 			send_signal(pid, av[2][i]);
 			i++;
 		}
+		send_signal(pid, '\n');
 	}
 	else
 	{

@@ -6,17 +6,26 @@
 #    By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/29 16:58:02 by zhlim             #+#    #+#              #
-#    Updated: 2023/06/29 17:55:54 by zhlim            ###   ########.fr        #
+#    Updated: 2023/06/30 17:23:42 by zhlim            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 SRCS		= server.c
+SRCC		= client.c
+SRCSB		= server_bonus.c
+SRCCB		= client_bonus.c
 
 OBJS		= server.o
+OBJC		= client.o
+OBJSB		= server_bonus.o
+OBJCB		= client_bonus.o
 
 HEAD		= ./includes/
 
 NAME		= server
+NAMEC		= client
+NAMEB		= server_bonus
+NAMECB		= client_bonus
 
 CC			= gcc
 
@@ -24,15 +33,20 @@ RM			= rm -f
 
 CFLAGS		= -Wall -Wextra -Werror
 
-LIBFT		= libft.a
+LDFLAGS		= -L.
 
+LDLIBS		= -lft -lftprintf
+
+LIBFT		= libft.a
 LIBPRINTF	= libftprintf.a
 
-all:		$(NAME)
+all:		$(NAME) $(NAMEC)
 
-$(NAME):	$(OBJS)
+$(NAME):	$(OBJS) $(LIBFT) $(LIBPRINTF)
+			$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
 
-$(OBJS):	$(LIBFT) $(LIBPRINTF)
+$(NAMEC):	$(OBJC) $(LIBFT) $(LIBPRINTF)
+			$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
 
 $(LIBFT):	
 			make -C libft/
@@ -42,13 +56,21 @@ $(LIBPRINTF):
 			make -C ft_printf/
 			cp ft_printf/libftprintf.a .
 
+bonus:		$(NAMEB) $(NAMECB)
+
+$(NAMEB):	$(OBJSB) $(LIBFT) $(LIBPRINTF)
+			$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
+
+$(NAMECB):	$(OBJCB) $(LIBFT) $(LIBPRINTF)
+			$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS) $(LDLIBS)
+
 clean:
-			$(RM) $(OBJS) $(LIBFT) $(LIBPRINTF)
+			$(RM) $(OBJS) $(OBJC) $(LIBFT) $(LIBPRINTF) $(OBJSB) $(OBJCB)
 			make clean -C ft_printf/
 			make clean -C libft/
 
 fclean:		clean
-			$(RM) $(NAME)
+			$(RM) $(NAME) $(NAMEC) $(NAMEB) $(NAMECB)
 			make fclean -C ft_printf/
 			make fclean -C libft/
 

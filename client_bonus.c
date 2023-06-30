@@ -1,54 +1,62 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   client_bonus.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/06/29 16:03:21 by zhlim             #+#    #+#             */
-/*   Updated: 2023/06/30 17:28:42 by zhlim            ###   ########.fr       */
+/*   Created: 2023/06/29 16:17:54 by zhlim             #+#    #+#             */
+/*   Updated: 2023/06/30 17:23:13 by zhlim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./includes/minitalk.h"
 
-void	signal_handler(int sig)
+void	acknowledges(int sig)
 {
-	static int	bit;
-	static char	c;
+	static int	i;
 
 	if (sig == SIGUSR1)
-		c |= 1 << bit;
-	bit++;
-	if (bit == 8)
+		ft_printf("Message Received: %d\n", ++i);
+}
+
+void	send_signal(int pid, char c)
+{
+	int	bit;
+
+	bit = 0;
+	while (bit < 8)
 	{
-		write(1, &c, 1);
-		bit = 0;
-		c = '\0';
+		if ((c & (1 << bit)) != 0)
+			kill(pid, SIGUSR1);
+		else
+			kill(pid, SIGUSR2);
+		bit++;
+		usleep(100);
 	}
 }
 
 int	main(int ac, char **av)
 {
 	int	pid;
+	int	i;
 
-	(void)av;
-	if (ac == 1)
+	if (ac == 3)
 	{
-		pid = getpid();
-		ft_printf("PID number: %d\n", pid);
-		ft_printf("Pending message to print...\n");
-		while (1)
+		i = 0;
+		pid = ft_atoi(av[1]);
+		while (av[2][i])
 		{
-			signal(SIGUSR1, signal_handler);
-			signal(SIGUSR2, signal_handler);
-			pause();
+			signal(SIGUSR1, acknowledges);
+			signal(SIGUSR2, acknowledges);
+			send_signal(pid, av[2][i]);
+			i++;
 		}
+		send_signal(pid, '\n');
 	}
 	else
 	{
-		ft_printf("No arguments allowed\n");
-		ft_printf("Stopping process\n");
+		ft_printf("Wrong number of arguments\n");
 		return (0);
 	}
 }
