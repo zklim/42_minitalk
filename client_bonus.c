@@ -6,7 +6,7 @@
 /*   By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 16:17:54 by zhlim             #+#    #+#             */
-/*   Updated: 2023/06/30 18:01:13 by zhlim            ###   ########.fr       */
+/*   Updated: 2023/07/01 16:13:21 by zhlim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,10 @@ int	main(int ac, char **av)
 	{
 		i = 0;
 		pid = ft_atoi(av[1]);
+		signal(SIGUSR1, acknowledges);
+		signal(SIGUSR2, acknowledges);
 		while (av[2][i])
 		{
-			signal(SIGUSR1, acknowledges);
-			signal(SIGUSR2, acknowledges);
 			send_signal(pid, av[2][i]);
 			i++;
 		}
