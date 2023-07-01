@@ -6,7 +6,7 @@
 /*   By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 16:17:54 by zhlim             #+#    #+#             */
-/*   Updated: 2023/06/30 17:50:42 by zhlim            ###   ########.fr       */
+/*   Updated: 2023/07/01 15:48:58 by zhlim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	send_signal(int pid, char c)
 		else
 			kill(pid, SIGUSR2);
 		bit++;
-		usleep(100);
+		usleep(120);
 	}
 }
 

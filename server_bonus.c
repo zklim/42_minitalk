@@ -6,7 +6,7 @@
 /*   By: zhlim <zhlim@student.42kl.edu.my>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/29 16:03:21 by zhlim             #+#    #+#             */
-/*   Updated: 2023/06/30 17:44:37 by zhlim            ###   ########.fr       */
+/*   Updated: 2023/07/01 15:58:14 by zhlim            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,11 @@ int	main(int ac, char **av)
 		pid = getpid();
 		ft_printf("PID number: %d\n", pid);
 		ft_printf("Pending message to print...\n");
+		sigaction(SIGUSR1, &sa, NULL);
+		sigaction(SIGUSR2, &sa, NULL);
 		while (1)
-		{
-			sigaction(SIGUSR1, &sa, NULL);
-			sigaction(SIGUSR2, &sa, NULL);
 			pause();
-		}
+		return (0);
 	}
 	else
 	{
